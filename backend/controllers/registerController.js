@@ -1,12 +1,8 @@
 import bcrypt from "bcryptjs";
-import userSchema from "../models/User.js";
-import connectRegisterDB from "../config/registerDB.js";
+import User from "../models/User.js";
 
 export const registerUser = async (req, res) => {
   try {
-    const conn = await connectRegisterDB();
-    const User = conn.model("User", userSchema);
-
     const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });

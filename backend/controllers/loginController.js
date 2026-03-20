@@ -1,13 +1,9 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import userSchema from "../models/User.js";
-import connectLoginDB from "../config/loginDB.js";
+import User from "../models/User.js";
 
 export const loginUser = async (req, res) => {
   try {
-    const conn = await connectLoginDB();
-    const User = conn.model("User", userSchema);
-
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
