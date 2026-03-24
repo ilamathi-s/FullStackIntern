@@ -34,9 +34,12 @@ return (
 
     <div className="bg-white p-8 rounded-lg shadow-md w-80">
 
-      <h2 className="text-xl font-semibold text-center mb-6 text-gray-800">
-        Register
-      </h2>
+      <h2 className="text-2xl font-bold text-gray-800 text-center mb-2">
+  Create Account
+</h2>
+<p className="text-sm text-gray-500 text-center mb-6">
+  Start your journey
+</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -64,7 +67,7 @@ return (
           className="w-full border px-3 py-2 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400"
         />
 
-        <button className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600">
+       <button className="w-full bg-green-500 text-white py-2.5 rounded-lg hover:bg-green-600 transition font-medium">
           Register
         </button>
       </form>

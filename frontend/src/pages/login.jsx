@@ -32,13 +32,14 @@ const Login = () => {
   };
 
   return (
-  <div className="flex items-center justify-center min-h-screen bg-gray-100">
-
-    <div className="bg-white p-8 rounded-lg shadow-md w-80">
-
-      <h2 className="text-xl font-semibold text-center mb-6 text-gray-800">
-        Login
-      </h2>
+  <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+  <div className="bg-white p-8 rounded-2xl shadow-md border w-full max-w-md">
+<h2 className="text-2xl font-bold text-gray-800 text-center mb-2">
+  Welcome Back
+</h2>
+<p className="text-sm text-gray-500 text-center mb-6">
+  Login to Continue
+</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -58,7 +59,7 @@ const Login = () => {
           className="w-full border px-3 py-2 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
-        <button className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+        <button className="w-full bg-blue-500 text-white py-2.5 rounded-lg hover:bg-blue-600 transition font-medium">
           Login
         </button>
       </form>
