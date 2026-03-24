@@ -1,17 +1,35 @@
 # FullStackIntern
 
-A full-stack task management application designed to help users efficiently organize and track their tasks. This project currently includes a fully functional authentication system with both frontend and backend integration.
+A full-stack task management application designed to help users efficiently organize, manage, and track their daily tasks. The project includes a complete authentication system along with fully implemented frontend and backend modules for task management.
 
 ---
 
 ## 🚀 Features
 
 ### ✅ Completed
+
+#### 🔐 Authentication
 - User Registration (Frontend + Backend)
 - User Login Authentication
-- Form validation
-- API integration between client and server
-- Responsive UI using Tailwind CSS
+- Secure API handling
+- Form validation with user-friendly feedback
+
+#### 📋 Task Management System
+- Create tasks
+- View all tasks
+- Update/edit tasks
+- Delete tasks
+- Persistent storage with backend integration
+
+#### 🔗 Integration
+- Seamless API integration between frontend and backend
+- RESTful API architecture
+
+#### 🎨 UI/UX
+- Fully responsive design
+- Clean and modern interface using Tailwind CSS
+
+---
 
 ## 🛠️ Tech Stack
 
@@ -23,3 +41,6 @@ A full-stack task management application designed to help users efficiently orga
 ### Backend
 - Node.js
 - Express.js
+
+---
+
