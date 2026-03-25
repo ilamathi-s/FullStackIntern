@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import Dashboard from "./pages/dashboard";
+import Home from "./pages/home";
 
 // Check token
 const isAuthenticated = () => {
@@ -24,6 +25,7 @@ function App() {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
         <Routes>
 
+          <Route path="/" element={<Home />} />
           {/* Public */}
           <Route
             path="/login"

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginUser } from "../services/api";
+import Navbar from "../components/navBar";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,7 +33,10 @@ const Login = () => {
   };
 
   return (
+    <>
+    <Navbar/>
   <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    
   <div className="bg-white p-8 rounded-2xl shadow-md border w-full max-w-md">
 <h2 className="text-2xl font-bold text-gray-800 text-center mb-2">
   Welcome Back
@@ -72,6 +76,7 @@ const Login = () => {
       </p>
     </div>
   </div>
+  </>
 );
 };
 
