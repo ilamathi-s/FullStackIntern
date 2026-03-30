@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -17,51 +16,3 @@ Note: This will impact Vite dev & build performances.
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# FullStackIntern
-
-A full-stack task management application designed to help users efficiently organize, manage, and track their daily tasks. The project includes a complete authentication system along with fully implemented frontend and backend modules for task management.
-
----
-
-## 🚀 Features
-
-### ✅ Completed
-
-#### 🔐 Authentication
-- User Registration (Frontend + Backend)
-- User Login Authentication
-- Secure API handling
-- Form validation with user-friendly feedback
-
-#### 📋 Task Management System
-- Create tasks
-- View all tasks
-- Update/edit tasks
-- Delete tasks
-- Persistent storage with backend integration
-
-#### 🔗 Integration
-- Seamless API integration between frontend and backend
-- RESTful API architecture
-
-#### 🎨 UI/UX
-- Fully responsive design
-- Clean and modern interface using Tailwind CSS
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-- React.js
-- JavaScript (ES6+)
-- Tailwind CSS
-
-### Backend
-- Node.js
-- Express.js
-
----
-
->>>>>>> 8cc885a8042406d7bee5acd149fedda2e569b5a1
