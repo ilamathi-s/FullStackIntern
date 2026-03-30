@@ -2,33 +2,34 @@ import Navbar from "../components/navBar";
 import { Link } from "react-router-dom";
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-bg flex flex-col">
 
-      <Navbar />
+  <Navbar />
 
-      {/* Center Content */}
-      <div className="flex flex-1 items-center justify-center px-6">
+  <div className="flex flex-1 items-center justify-center px-6">
 
-        <div className="text-center max-w-xl">
+    <div className="text-center max-w-xl">
 
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            Welcome to TaskFlow
-          </h1>
+      <h1 className="text-4xl font-bold text-text mb-4">
+        Welcome to TaskFlow
+      </h1>
 
-          <p className="text-gray-600 text-lg mb-6">
-            A simple and efficient way to manage your daily tasks. 
-            Stay organized, track your progress, and boost productivity 
-            with an easy-to-use interface.
-          </p>
+      <p className="text-muted text-lg mb-6">
+        A simple and efficient way to manage your daily tasks.
+      </p>
 
-          <div className="flex justify-center gap-4">
-            <Link to="/register" className="...">Get Started</Link>
-<Link to="/login" className="...">Login</Link>
-          </div>
+      <div className="flex justify-center gap-4">
+        <Link to="/select-role?type=register" className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-hover">
+          Get Started
+        </Link>
 
-        </div>
-
+        <Link to="/select-role?type=login" className="border border-border px-6 py-2 rounded-lg text-text hover:bg-gray-100">
+          Login
+        </Link>
       </div>
+
     </div>
+  </div>
+</div>
   );
 }

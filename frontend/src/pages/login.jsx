@@ -1,83 +1,107 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { loginUser } from "../services/api";
 import Navbar from "../components/navBar";
+import InputField from "../components/inputField";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { role } = useParams(); // ✅ get role from URL
 
-  const [form, setForm] = useState({
-    email: "",
-    password: ""
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const onSubmit = async (data) => {
+  try {
+    const res = await loginUser({ ...data, role });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const user = res.data.user;
 
-    try {
-      const res = await loginUser(form);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+    // ❌ ROLE MISMATCH CHECK
+    if (user.role !== role) {
+      alert("You selected wrong role. Please choose correct login.");
 
-      alert("Login Successful");
+      // clear anything just in case
+      localStorage.clear();
 
-      navigate("/dashboard");
-
-    } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      navigate("/select-role?type=login");
+      return;
     }
+
+    // ✅ correct login
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    alert("Login Successful");
+
+    if (user.role === "admin") {
+      navigate("/admin-dashboard");
+    } else {
+      navigate("/user-dashboard");
+    }
+
+  } catch (err) {
+    alert(err.response?.data?.message || "Login failed");
+  }
+};
+  const onError = () => {
+    alert("Please fill all fields");
   };
 
   return (
     <>
-    <Navbar/>
-  <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-    
-  <div className="bg-white p-8 rounded-2xl shadow-md border w-full max-w-md">
-<h2 className="text-2xl font-bold text-gray-800 text-center mb-2">
-  Welcome Back
-</h2>
-<p className="text-sm text-gray-500 text-center mb-6">
-  Login to Continue
-</p>
+      <Navbar />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="min-h-screen flex items-center justify-center bg-bg px-4">
+        <div className="bg-card p-8 rounded-2xl shadow-md border border-border w-full max-w-md">
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your email"
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+          <h2 className="text-2xl font-bold text-text text-center mb-2">
+            {role === "admin" ? "Admin Login" : "User Login"}
+          </h2>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter your password"
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+          <p className="text-sm text-muted text-center mb-6">
+            Login to Continue
+          </p>
 
-        <button className="w-full bg-blue-500 text-white py-2.5 rounded-lg hover:bg-blue-600 transition font-medium">
-          Login
-        </button>
-      </form>
+          <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-4">
 
-      <p className="text-sm text-center mt-4 text-gray-600">
-        Don't have an account?{" "}
-        <Link to="/register" className="text-blue-500">
-          Register
-        </Link>
-      </p>
-    </div>
-  </div>
-  </>
-);
+            <InputField
+              label="Email"
+              name="email"
+              type="email"
+              register={register}
+              error={errors.email}
+            />
+
+            <InputField
+              label="Password"
+              name="password"
+              type="password"
+              register={register}
+              error={errors.password}
+            />
+
+            <button className="w-full bg-primary text-white py-2.5 rounded-lg hover:bg-primary-hover">
+              Login
+            </button>
+
+          </form>
+
+          <p className="text-sm text-center mt-4 text-muted">
+            Don't have an account?
+            <Link to={`/register/${role}`} className="text-primary ml-1">
+              Register
+            </Link>
+          </p>
+
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Login;

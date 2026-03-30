@@ -1,18 +1,48 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# FullStackIntern
 
-Currently, two official plugins are available:
+A full-stack task management application designed to help users efficiently organize, manage, and track their daily tasks. The project includes a complete authentication system along with fully implemented frontend and backend modules for task management.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### ✅ Completed
 
-Note: This will impact Vite dev & build performances.
+#### 🔐 Authentication
+- User Registration (Frontend + Backend)
+- User Login Authentication
+- Secure API handling
+- Form validation with user-friendly feedback
 
-## Expanding the ESLint configuration
+#### 📋 Task Management System
+- Create tasks
+- View all tasks
+- Update/edit tasks
+- Delete tasks
+- Persistent storage with backend integration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+#### 🔗 Integration
+- Seamless API integration between frontend and backend
+- RESTful API architecture
+
+#### 🎨 UI/UX
+- Fully responsive design
+- Clean and modern interface using Tailwind CSS
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- React.js
+- JavaScript (ES6+)
+- Tailwind CSS
+
+### Backend
+- Node.js
+- Express.js
+
+---
+
+>>>>>>> 8cc885a8042406d7bee5acd149fedda2e569b5a1

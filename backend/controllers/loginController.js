@@ -17,12 +17,21 @@ export const loginUser = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id },
+      { id: user._id, role: user.role }, // ✅ include role
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
-    res.json({ token, user });
+    // ✅ Send only required data
+    res.json({
+      token,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role, // ✅ REQUIRED
+      },
+    });
 
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -3,20 +3,30 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import Dashboard from "./pages/dashboard";
 import Home from "./pages/home";
-
-// Check token
+import SelectRole from "./pages/roleSelect";
+import AdminDashboard from "./pages/adminDashboard"
+import UserDashboard from "./pages/userDashboard"
 const isAuthenticated = () => {
   return !!localStorage.getItem("token");
 };
 
 // Protected Route
 const PrivateRoute = ({ children }) => {
-  return isAuthenticated() ? children : <Navigate to="/login" />;
+  if (!isAuthenticated()) {
+    return <Navigate to="/select-role?type=login" />;
+  }
+  return children;
 };
 
 // Public Route (prevent access after login)
 const PublicRoute = ({ children }) => {
-  return !isAuthenticated() ? children : <Navigate to="/dashboard" />;
+  if (!isAuthenticated()) return children;
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  return user?.role === "admin"
+    ? <Navigate to="/admin-dashboard" />
+    : <Navigate to="/user-dashboard" />;
 };
 
 function App() {
@@ -28,7 +38,7 @@ function App() {
           <Route path="/" element={<Home />} />
           {/* Public */}
           <Route
-            path="/login"
+            path="/login/:role"
             element={
               <PublicRoute>
                 <Login />
@@ -37,7 +47,7 @@ function App() {
           />
 
           <Route
-            path="/register"
+            path="/register/:role"
             element={
               <PublicRoute>
                 <Register />
@@ -54,13 +64,14 @@ function App() {
               </PrivateRoute>
             }
           />
-
+ <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
           {/* Default */}
           <Route
             path="*"
             element={<Navigate to="/login" />}
           />
-
+  <Route path="/select-role" element={<SelectRole />} />
         </Routes>
       </div>
     </BrowserRouter>

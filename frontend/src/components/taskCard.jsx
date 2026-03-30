@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { updateTask, deleteTask } from "../services/api";
+import { FaCheckCircle } from "react-icons/fa";
 
 export default function TaskCard({ task, refresh }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -7,119 +8,196 @@ export default function TaskCard({ task, refresh }) {
     title: task.title,
     description: task.description,
     priority: task.priority,
+    status: task.status,
   });
 
+  // 🔹 Update Task
   const handleUpdate = async () => {
     await updateTask(task._id, updatedTask);
     setIsEditing(false);
     refresh();
   };
 
+  // 🔹 Mark as Completed
+  const handleComplete = async () => {
+    await updateTask(task._id, { status: "completed" });
+    refresh();
+  };
+
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition duration-300">
+    <div className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition duration-300">
 
-  {isEditing ? (
-    <div className="space-y-3">
+      {isEditing ? (
+        <div className="space-y-3">
 
-      <input
-  className="w-full px-3 py-2 border rounded-lg 
-  text-gray-900 placeholder-gray-400
-  focus:ring-2 focus:ring-blue-400 outline-none"
-  placeholder="Edit title..."
-  value={updatedTask.title}
-  onChange={(e) =>
-    setUpdatedTask({ ...updatedTask, title: e.target.value })
-  }
-/>
+          {/* Title */}
+          <input
+            className="w-full px-3 py-2 border border-border rounded-lg 
+            text-text placeholder-muted
+            focus:ring-2 focus:ring-primary outline-none"
+            placeholder="Edit title..."
+            value={updatedTask.title}
+            onChange={(e) =>
+              setUpdatedTask({ ...updatedTask, title: e.target.value })
+            }
+          />
 
-<textarea
-  className="w-full px-3 py-2 border rounded-lg 
-  text-gray-900 placeholder-gray-400
-  focus:ring-2 focus:ring-blue-400 outline-none"
-  placeholder="Edit description..."
-  value={updatedTask.description}
-  onChange={(e) =>
-    setUpdatedTask({
-      ...updatedTask,
-      description: e.target.value,
-    })
-  }
-/>
+          {/* Description */}
+          <textarea
+            className="w-full px-3 py-2 border border-border rounded-lg 
+            text-text placeholder-muted
+            focus:ring-2 focus:ring-primary outline-none"
+            placeholder="Edit description..."
+            value={updatedTask.description}
+            onChange={(e) =>
+              setUpdatedTask({
+                ...updatedTask,
+                description: e.target.value,
+              })
+            }
+          />
 
+          {/* Priority */}
+          <select
+            className="w-full px-3 py-2 border border-border rounded-lg 
+            text-text bg-card
+            focus:ring-2 focus:ring-primary outline-none"
+            value={updatedTask.priority}
+            onChange={(e) =>
+              setUpdatedTask({
+                ...updatedTask,
+                priority: e.target.value,
+              })
+            }
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
 <select
-  className="w-full px-3 py-2 border rounded-lg 
-  text-gray-900
-  focus:ring-2 focus:ring-blue-400 outline-none"
-  value={updatedTask.priority}
+  className="w-full px-3 py-2 border border-border rounded-lg 
+  text-text bg-card
+  focus:ring-2 focus:ring-primary outline-none"
+  value={updatedTask.status}
   onChange={(e) =>
     setUpdatedTask({
       ...updatedTask,
-      priority: e.target.value,
+      status: e.target.value,
     })
   }
 >
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
+  <option value="pending">Pending</option>
+  <option value="in-progress">In Progress</option>
+  <option value="completed">Completed</option>
+</select>
+          {/* Buttons */}
+          <div className="flex gap-2 pt-2">
+            <button
+              onClick={handleUpdate}
+              className="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition"
+            >
+              Save
+            </button>
 
-      <div className="flex gap-2 pt-2">
-        <button
-          onClick={handleUpdate}
-          className="flex-1 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-        >
-          Save
-        </button>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="flex-1 py-2 bg-border text-text rounded-lg hover:opacity-80 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Header */}
+          <div className="flex justify-between items-start">
 
-        <button
-          onClick={() => setIsEditing(false)}
-          className="flex-1 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-        >
-          Cancel
-        </button>
-      </div>
+            <h3
+              className={`text-lg font-semibold ${
+                task.status === "completed"
+                  ? "line-through text-muted"
+                  : "text-text"
+              }`}
+            >
+              {task.title}
+            </h3>
+
+            <div className="flex gap-2">
+
+              {/* Priority */}
+              <span
+                className={`text-xs px-2 py-1 rounded-full font-medium
+                ${task.priority === "high" && "bg-red-100 text-red-600"}
+                ${task.priority === "medium" && "bg-yellow-100 text-yellow-600"}
+                ${task.priority === "low" && "bg-green-100 text-green-600"}`}
+              >
+                {task.priority}
+              </span>
+
+              {/* Status */}
+              <span
+                className={`text-xs px-2 py-1 rounded-full font-medium
+                ${task.status === "completed" && "bg-green-100 text-green-600"}
+                ${task.status === "in-progress" && "bg-blue-100 text-blue-600"}
+                ${task.status === "pending" && "bg-gray-100 text-gray-600"}`}
+              >
+                {task.status}
+              </span>
+
+            </div>
+          </div>
+
+          {/* Description */}
+          <p
+            className={`mt-2 text-sm leading-relaxed ${
+              task.status === "completed"
+                ? "line-through text-muted"
+                : "text-muted"
+            }`}
+          >
+            {task.description}
+          </p>
+
+          {/* Actions */}
+          <div className="flex gap-2 mt-4">
+
+            {/* Complete Button */}
+            <button
+              onClick={handleComplete}
+              disabled={task.status === "completed"}
+              className={`flex-1 py-2 text-white rounded-lg flex items-center justify-center gap-2 transition
+              ${
+                task.status === "completed"
+                  ? "bg-green-300 cursor-not-allowed"
+                  : "bg-green-500 hover:bg-green-600"
+              }`}
+            >
+              <FaCheckCircle />
+              Done
+            </button>
+
+            {/* Edit */}
+            <button
+              onClick={() => setIsEditing(true)}
+              className="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition"
+            >
+              Edit
+            </button>
+
+            {/* Delete */}
+            <button
+              onClick={async () => {
+                await deleteTask(task._id);
+                refresh();
+              }}
+              className="flex-1 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+            >
+              Delete
+            </button>
+
+          </div>
+        </>
+      )}
     </div>
-  ) : (
-    <>
-      <div className="flex justify-between items-start">
-        <h3 className="text-lg font-semibold text-gray-800">
-          {task.title}
-        </h3>
-
-        <span
-          className={`text-xs px-2 py-1 rounded-full font-medium
-          ${task.priority === "high" && "bg-red-100 text-red-600"}
-          ${task.priority === "medium" && "bg-yellow-100 text-yellow-600"}
-          ${task.priority === "low" && "bg-green-100 text-green-600"}`}
-        >
-          {task.priority}
-        </span>
-      </div>
-
-      <p className="text-gray-600 mt-2 text-sm leading-relaxed">
-        {task.description}
-      </p>
-
-      <div className="flex gap-2 mt-4">
-        <button
-          onClick={() => setIsEditing(true)}
-          className="flex-1 py-2 bg-green-500 rounded-lg hover:bg-green-200 transition"
-        >
-          Edit
-        </button>
-
-        <button
-          onClick={async () => {
-            await deleteTask(task._id);
-            refresh();
-          }}
-          className="flex-1 py-2 bg-red-500 text-white rounded-lg hover:bg-red-300 transition"
-        >
-          Delete
-        </button>
-      </div>
-    </>
-  )}
-</div>
   );
 }

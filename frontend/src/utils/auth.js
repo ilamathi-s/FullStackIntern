@@ -11,3 +11,14 @@ export const getToken = () => {
 export const logout = () => {
   localStorage.removeItem("token");
 };
+export const getUser = () => {
+  return JSON.parse(localStorage.getItem("user"));
+};
+
+export const isAdmin = () => {
+  return getUser()?.role === "admin";
+};
+
+export const isUser = () => {
+  return getUser()?.role === "user";
+};

@@ -1,90 +1,97 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { registerUser } from "../services/api";
 import Navbar from "../components/navBar";
+import InputField from "../components/inputField";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { role } = useParams(); // ✅ get role
 
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: ""
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const onSubmit = async (data) => {
     try {
-      const res = await registerUser(form);
+      // ✅ attach role
+      const res = await registerUser({ ...data, role });
 
       alert(res.data.message);
 
-      navigate("/"); 
+      // redirect to login of same role
+      navigate(`/login/${role}`);
 
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
     }
   };
-return (
-  <>  <Navbar/>
-  <div className="flex items-center justify-center min-h-screen bg-gray-100">
-    
-    <div className="bg-white p-8 rounded-lg shadow-md w-80">
 
-      <h2 className="text-2xl font-bold text-gray-800 text-center mb-2">
-  Create Account
-</h2>
-<p className="text-sm text-gray-500 text-center mb-6">
-  Start your journey
-</p>
+  const onError = () => {
+    alert("Please fill all fields");
+  };
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+  return (
+    <>
+      <Navbar />
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Enter your name"
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400"
-        />
+      <div className="flex items-center justify-center min-h-screen bg-bg">
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your email"
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400"
-        />
+        <div className="bg-card p-8 rounded-lg shadow-md w-80 border border-border">
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter your password"
-          onChange={handleChange}
-          className="w-full border px-3 py-2 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400"
-        />
+          <h2 className="text-2xl font-bold text-text text-center mb-2">
+            {role === "admin" ? "Admin Register" : "User Register"}
+          </h2>
 
-       <button className="w-full bg-green-500 text-white py-2.5 rounded-lg hover:bg-green-600 transition font-medium">
-          Register
-        </button>
-      </form>
+          <p className="text-sm text-muted text-center mb-6">
+            Start your journey
+          </p>
 
-      <p className="text-sm text-center mt-4 text-gray-600">
-        Already have an account?{" "}
-        <Link to="/login" className="text-green-500">
-          Login
-        </Link>
-      </p>
-    </div>
-  </div>
-  </>
+          <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-4">
 
-);
+            <InputField
+              label="Name"
+              name="name"
+              register={register}
+              error={errors.name}
+            />
+
+            <InputField
+              label="Email"
+              name="email"
+              type="email"
+              register={register}
+              error={errors.email}
+            />
+
+            <InputField
+              label="Password"
+              name="password"
+              type="password"
+              register={register}
+              error={errors.password}
+            />
+
+            <button className="w-full bg-primary text-white py-2.5 rounded-lg hover:bg-primary-hover">
+              Register
+            </button>
+
+          </form>
+
+          <p className="text-sm text-center mt-4 text-muted">
+            Already have an account?
+            <Link to={`/login/${role}`} className="text-primary ml-1">
+              Login
+            </Link>
+          </p>
+
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Register;
