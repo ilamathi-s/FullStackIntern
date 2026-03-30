@@ -1,30 +1,26 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Links, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { loginUser } from "../services/api";
 import Navbar from "../components/navBar";
-
+import InputField from "../components/inputField";
+import {Link} from "react-router-dom"
 const Login = () => {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    email: "",
-    password: ""
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const onSubmit = async (data) => {
     try {
-      const res = await loginUser(form);
+      const res = await loginUser(data);
+
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       alert("Login Successful");
-
       navigate("/dashboard");
 
     } catch (err) {
@@ -32,53 +28,59 @@ const Login = () => {
     }
   };
 
+  const onError = () => {
+    alert("Please fill all fields");
+  };
+
   return (
     <>
-    <Navbar/>
- <div className="min-h-screen flex items-center justify-center bg-bg px-4">
+      <Navbar />
 
-  <div className="bg-card p-8 rounded-2xl shadow-md border border-border w-full max-w-md">
+      <div className="min-h-screen flex items-center justify-center bg-bg px-4">
+        <div className="bg-card p-8 rounded-2xl shadow-md border border-border w-full max-w-md">
 
-    <h2 className="text-2xl font-bold text-text text-center mb-2">
-      Welcome Back
-    </h2>
+          <h2 className="text-2xl font-bold text-text text-center mb-2">
+            Welcome Back
+          </h2>
 
-    <p className="text-sm text-muted text-center mb-6">
-      Login to Continue
-    </p>
+          <p className="text-sm text-muted text-center mb-6">
+            Login to Continue
+          </p>
 
-    <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-4">
 
-      <input
-        type="email"
-        name="email"
-        placeholder="Enter your email"
-        onChange={handleChange}
-        className="w-full border border-border px-3 py-2 rounded-md text-text placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary"
-      />
+            <InputField
+              label="Email"
+              name="email"
+              type="email"
+              register={register}
+              error={errors.email}
+            />
 
-      <input
-        type="password"
-        name="password"
-        placeholder="Enter your password"
-        onChange={handleChange}
-        className="w-full border border-border px-3 py-2 rounded-md text-text placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary"
-      />
+            <InputField
+              label="Password"
+              name="password"
+              type="password"
+              register={register}
+              error={errors.password}
+            />
 
-      <button className="w-full bg-primary text-white py-2.5 rounded-lg hover:bg-primary-hover transition font-medium">
-        Login
-      </button>
-    </form>
+            <button className="w-full bg-primary text-white py-2.5 rounded-lg hover:bg-primary-hover">
+              Login
+            </button>
 
-    <p className="text-sm text-center mt-4 text-muted">
-      Don't have an account?{" "}
+          </form>
+              <p className="text-sm text-center mt-4 text-muted">
+      Don't have an account?
       <Link to="/register" className="text-primary">
         Register
       </Link>
     </p>
-  </div>
-</div> </>
-);
+
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Login;

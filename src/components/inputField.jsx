@@ -1,12 +1,14 @@
 import { useState } from "react";
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 const InputField = ({ label, type = "text", register, name, error }) => {
   const [focused, setFocused] = useState(false);
+ const [showPassword, setShowPassword] = useState(false);
 
+  const isPassword = type === "password";
   return (
     <div className="relative w-full">
       <input
-        type={type}
+         type={isPassword && showPassword ? "text" : type}
         {...register(name, { required: `${label} is required` })}
         onFocus={() => setFocused(true)}
         onBlur={(e) => setFocused(e.target.value !== "")}
@@ -22,7 +24,14 @@ const InputField = ({ label, type = "text", register, name, error }) => {
       >
         {label}
       </label>
-
+          {isPassword && (
+        <span
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-3 cursor-pointer text-muted hover:text-primary"
+        >
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
+        </span>
+      )}
       {error && (
         <p className="text-red-500 text-xs mt-1">{error.message}</p>
       )}

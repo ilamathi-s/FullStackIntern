@@ -1,91 +1,91 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { registerUser } from "../services/api";
 import Navbar from "../components/navBar";
-
+import InputField from "../components/inputField";
+import {Link} from "react-router-dom"
 const Register = () => {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: ""
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const onSubmit = async (data) => {
     try {
-      const res = await registerUser(form);
+      const res = await registerUser(data);
 
       alert(res.data.message);
-
-      navigate("/"); 
+      navigate("/");
 
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
     }
   };
-return (
-  <>  <Navbar/>
-  <div className="flex items-center justify-center min-h-screen bg-bg">
 
-  <div className="bg-card p-8 rounded-lg shadow-md w-80 border border-border">
+  const onError = () => {
+    alert("Please fill all fields");
+  };
 
-    <h2 className="text-2xl font-bold text-text text-center mb-2">
-      Create Account
-    </h2>
+  return (
+    <>
+      <Navbar />
 
-    <p className="text-sm text-muted text-center mb-6">
-      Start your journey
-    </p>
+      <div className="flex items-center justify-center min-h-screen bg-bg">
 
-    <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="bg-card p-8 rounded-lg shadow-md w-80 border border-border">
 
-      <input
-        type="text"
-        name="name"
-        placeholder="Enter your name"
-        onChange={handleChange}
-        className="w-full border border-border px-3 py-2 rounded-md text-text placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary"
-      />
+          <h2 className="text-2xl font-bold text-text text-center mb-2">
+            Create Account
+          </h2>
 
-      <input
-        type="email"
-        name="email"
-        placeholder="Enter your email"
-        onChange={handleChange}
-        className="w-full border border-border px-3 py-2 rounded-md text-text placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary"
-      />
+          <p className="text-sm text-muted text-center mb-6">
+            Start your journey
+          </p>
 
-      <input
-        type="password"
-        name="password"
-        placeholder="Enter your password"
-        onChange={handleChange}
-        className="w-full border border-border px-3 py-2 rounded-md text-text placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary"
-      />
+          <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-4">
 
-      <button className="w-full bg-primary text-white py-2.5 rounded-lg hover:bg-primary-hover transition font-medium">
-        Register
-      </button>
-    </form>
+            <InputField
+              label="Name"
+              name="name"
+              register={register}
+              error={errors.name}
+            />
 
-    <p className="text-sm text-center mt-4 text-muted">
-      Already have an account?{" "}
+            <InputField
+              label="Email"
+              name="email"
+              type="email"
+              register={register}
+              error={errors.email}
+            />
+
+            <InputField
+              label="Password"
+              name="password"
+              type="password"
+              register={register}
+              error={errors.password}
+            />
+
+            <button className="w-full bg-primary text-white py-2.5 rounded-lg hover:bg-primary-hover">
+              Register
+            </button>
+
+          </form>
+              <p className="text-sm text-center mt-4 text-muted">
+      Already have an account?
       <Link to="/login" className="text-primary">
         Login
       </Link>
     </p>
-  </div>
-</div>
-  </>
 
-);
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Register;
