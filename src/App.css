@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-100;
+}
+:root {
+  /* Primary (very subtle, not loud) */
+  --color-primary: #4f46e5;         /* soft indigo */
+  --color-primary-hover: #4338ca;
+
+  /* Backgrounds */
+  --color-bg: #f9fafb;              /* very light gray */
+  --color-card: #ffffff;
+
+  /* Text */
+  --color-text: #111827;            /* near black */
+  --color-muted: #6b7280;           /* gray-500 */
+
+  /* Borders */
+  --color-border: #e5e7eb;          /* soft border */
+
+  /* Optional UI states */
+  --color-hover: #f3f4f6;
+}
