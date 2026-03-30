@@ -76,9 +76,3 @@ A full-stack task management application designed to help users efficiently orga
 
 ---
 
-
-
-
-### Clone the repository
-```bash
-git clone https://github.com/ilamathi-s/FullStackIntern.git
