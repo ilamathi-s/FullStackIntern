@@ -9,16 +9,12 @@ import UserDashboard from "./pages/userDashboard"
 const isAuthenticated = () => {
   return !!localStorage.getItem("token");
 };
-
-// Protected Route
 const PrivateRoute = ({ children }) => {
   if (!isAuthenticated()) {
     return <Navigate to="/select-role?type=login" />;
   }
   return children;
 };
-
-// Public Route (prevent access after login)
 const PublicRoute = ({ children }) => {
   if (!isAuthenticated()) return children;
 
@@ -36,7 +32,6 @@ function App() {
         <Routes>
 
           <Route path="/" element={<Home />} />
-          {/* Public */}
           <Route
             path="/login/:role"
             element={
@@ -54,8 +49,6 @@ function App() {
               </PublicRoute>
             }
           />
-
-          {/* Private */}
           <Route
             path="/dashboard"
             element={
@@ -66,7 +59,6 @@ function App() {
           />
  <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
-          {/* Default */}
           <Route
             path="*"
             element={<Navigate to="/login" />}

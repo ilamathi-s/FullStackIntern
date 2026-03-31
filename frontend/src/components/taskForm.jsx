@@ -6,13 +6,12 @@ export default function TaskForm({ refresh }) {
     title: "",
     description: "",
     priority: "medium",
-    status: "pending", // ✅ FIXED
+    status: "pending", 
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ validation
     if (!task.title || !task.description) {
       alert("Please fill all fields");
       return;
@@ -22,7 +21,6 @@ export default function TaskForm({ refresh }) {
       const res = await createTask(task);
       console.log("Created:", res.data);
 
-      // ✅ reset form
       setTask({
         title: "",
         description: "",
@@ -50,7 +48,6 @@ export default function TaskForm({ refresh }) {
 
       <form onSubmit={handleSubmit} className="space-y-3">
 
-        {/* Title */}
         <input
           type="text"
           placeholder="Enter task title..."
@@ -62,8 +59,6 @@ export default function TaskForm({ refresh }) {
             setTask({ ...task, title: e.target.value })
           }
         />
-
-        {/* Description */}
         <textarea
           placeholder="Enter task description..."
           className="w-full px-3 py-2 border border-border rounded-lg 
@@ -74,8 +69,6 @@ export default function TaskForm({ refresh }) {
             setTask({ ...task, description: e.target.value })
           }
         />
-
-        {/* Priority */}
         <select
           className="w-full p-2 border border-border rounded text-text bg-card
           focus:outline-none focus:ring-2 focus:ring-primary"
@@ -88,8 +81,6 @@ export default function TaskForm({ refresh }) {
           <option value="medium">Medium Priority</option>
           <option value="high">High Priority</option>
         </select>
-
-        {/* Status */}
         <select
           className="w-full p-2 border border-border rounded text-text bg-card
           focus:outline-none focus:ring-2 focus:ring-primary"
@@ -102,8 +93,6 @@ export default function TaskForm({ refresh }) {
           <option value="in-progress">In Progress</option>
           <option value="completed">Completed</option>
         </select>
-
-        {/* Button */}
         <button className="w-full bg-primary text-white py-2.5 rounded-lg hover:bg-primary-hover transition font-medium">
           Add Task
         </button>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/navBar";
-
+import TaskForm from "../components/taskForm";
+import TaskList from "../components/taskList";
 export default function UserDashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -44,30 +44,15 @@ export default function UserDashboard() {
         </p>
 
         {/* User Features */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-          <div className="bg-card p-6 rounded-xl shadow border border-border">
-            <h2 className="font-semibold text-lg mb-2">My Tasks</h2>
-            <p className="text-sm text-muted">
-              View and manage your tasks.
-            </p>
-          </div>
-
-          <div className="bg-card p-6 rounded-xl shadow border border-border">
-            <h2 className="font-semibold text-lg mb-2">Profile</h2>
-            <p className="text-sm text-muted">
-              Update your personal info.
-            </p>
-          </div>
-
-          <div className="bg-card p-6 rounded-xl shadow border border-border">
-            <h2 className="font-semibold text-lg mb-2">Activity</h2>
-            <p className="text-sm text-muted">
-              Track your recent activity.
-            </p>
-          </div>
-
-        </div>
+       <div className="grid lg:grid-cols-3 gap-6">
+           <div className="lg:col-span-1">
+             <TaskForm refresh={() => window.location.reload()} />
+           </div>
+       
+           <div className="lg:col-span-2">
+             <TaskList />
+           </div>
+         </div>
 
       </div>
     </>

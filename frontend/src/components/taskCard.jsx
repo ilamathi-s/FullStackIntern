@@ -10,15 +10,11 @@ export default function TaskCard({ task, refresh }) {
     priority: task.priority,
     status: task.status,
   });
-
-  // 🔹 Update Task
   const handleUpdate = async () => {
     await updateTask(task._id, updatedTask);
     setIsEditing(false);
     refresh();
   };
-
-  // 🔹 Mark as Completed
   const handleComplete = async () => {
     await updateTask(task._id, { status: "completed" });
     refresh();
@@ -29,8 +25,6 @@ export default function TaskCard({ task, refresh }) {
 
       {isEditing ? (
         <div className="space-y-3">
-
-          {/* Title */}
           <input
             className="w-full px-3 py-2 border border-border rounded-lg 
             text-text placeholder-muted
@@ -41,8 +35,6 @@ export default function TaskCard({ task, refresh }) {
               setUpdatedTask({ ...updatedTask, title: e.target.value })
             }
           />
-
-          {/* Description */}
           <textarea
             className="w-full px-3 py-2 border border-border rounded-lg 
             text-text placeholder-muted
@@ -56,8 +48,6 @@ export default function TaskCard({ task, refresh }) {
               })
             }
           />
-
-          {/* Priority */}
           <select
             className="w-full px-3 py-2 border border-border rounded-lg 
             text-text bg-card
@@ -90,7 +80,6 @@ export default function TaskCard({ task, refresh }) {
   <option value="in-progress">In Progress</option>
   <option value="completed">Completed</option>
 </select>
-          {/* Buttons */}
           <div className="flex gap-2 pt-2">
             <button
               onClick={handleUpdate}
@@ -109,7 +98,6 @@ export default function TaskCard({ task, refresh }) {
         </div>
       ) : (
         <>
-          {/* Header */}
           <div className="flex justify-between items-start">
 
             <h3
@@ -123,8 +111,6 @@ export default function TaskCard({ task, refresh }) {
             </h3>
 
             <div className="flex gap-2">
-
-              {/* Priority */}
               <span
                 className={`text-xs px-2 py-1 rounded-full font-medium
                 ${task.priority === "high" && "bg-red-100 text-red-600"}
@@ -133,8 +119,6 @@ export default function TaskCard({ task, refresh }) {
               >
                 {task.priority}
               </span>
-
-              {/* Status */}
               <span
                 className={`text-xs px-2 py-1 rounded-full font-medium
                 ${task.status === "completed" && "bg-green-100 text-green-600"}
@@ -146,8 +130,6 @@ export default function TaskCard({ task, refresh }) {
 
             </div>
           </div>
-
-          {/* Description */}
           <p
             className={`mt-2 text-sm leading-relaxed ${
               task.status === "completed"
@@ -157,11 +139,7 @@ export default function TaskCard({ task, refresh }) {
           >
             {task.description}
           </p>
-
-          {/* Actions */}
           <div className="flex gap-2 mt-4">
-
-            {/* Complete Button */}
             <button
               onClick={handleComplete}
               disabled={task.status === "completed"}
@@ -175,16 +153,12 @@ export default function TaskCard({ task, refresh }) {
               <FaCheckCircle />
               Done
             </button>
-
-            {/* Edit */}
             <button
               onClick={() => setIsEditing(true)}
               className="flex-1 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition"
             >
               Edit
             </button>
-
-            {/* Delete */}
             <button
               onClick={async () => {
                 await deleteTask(task._id);

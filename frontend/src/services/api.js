@@ -7,7 +7,6 @@ const API = axios.create({
   },
 });
 
-// Attach token
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
 
@@ -18,23 +17,20 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-// Handle expired token / unauthorized
 API.interceptors.response.use(
   (res) => res,
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/login"; // force redirect
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
 );
 
-// AUTH APIs
 export const loginUser = (data) => API.post("/auth/login", data);
 export const registerUser = (data) => API.post("/auth/register", data);
 
-// TASK APIs (add now itself for scalability)
 export const getTasks = () => API.get("/tasks");
 export const createTask = (data) => API.post("/tasks", data);
 export const updateTask = (id, data) => API.put(`/tasks/${id}`, data);

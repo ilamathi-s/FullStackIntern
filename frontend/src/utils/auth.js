@@ -1,5 +1,3 @@
-//to handle auth tasks
-
 export const setToken = (token) => {
   localStorage.setItem("token", token);
 };
