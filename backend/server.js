@@ -6,7 +6,7 @@ import connectDB from "./config/db.js";
 import loginRoutes from "./routes/loginRoutes.js";
 import registerRoutes from "./routes/registerRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
-
+import adminRoutes from "./routes/adminRoutes.js"
 dotenv.config();
 connectDB();
 
@@ -17,7 +17,7 @@ app.use(express.json());
 app.use("/api/auth", registerRoutes);
 app.use("/api/auth", loginRoutes);
 app.use("/api/tasks", taskRoutes);
-
+app.use("/api/admin", adminRoutes);
 app.get("/", (req, res) => {
   res.send("🚀 Server is running...");
 });
@@ -31,6 +31,7 @@ app.use((err, req, res, next) => {
     message: err.message || "Internal Server Error",
   });
 });
+
 
 const PORT = process.env.PORT || 5000;
 

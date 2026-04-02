@@ -28,7 +28,7 @@ export default function TaskForm({ refresh }) {
         status: "pending",
       });
 
-      refresh();
+      if (refresh) refresh();
     } catch (err) {
       console.error(err.response?.data || err);
       alert("Task creation failed");

@@ -18,7 +18,8 @@ const Register = () => {
   const onSubmit = async (data) => {
     try {
       // ✅ attach role
-      const res = await registerUser({ ...data, role });
+      // ✅ NEW
+const res = await registerUser(data);
 
       alert(res.data.message);
 

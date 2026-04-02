@@ -1,3 +1,4 @@
+// models/User.js
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -6,9 +7,10 @@ const userSchema = new mongoose.Schema({
   password: String,
   role: {
     type: String,
-    enum: ["user", "admin"],
-    default: "user",
+    enum: ["admin", "user"],
+    default: "user"
   },
-});
+  lastLogin: Date
+}, { timestamps: true });
 
 export default mongoose.model("User", userSchema);

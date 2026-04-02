@@ -57,8 +57,23 @@ function App() {
               </PrivateRoute>
             }
           />
- <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        <Route path="/user-dashboard" element={<UserDashboard />} />
+ <Route 
+  path="/admin-dashboard" 
+  element={
+    <PrivateRoute>
+      <AdminDashboard />
+    </PrivateRoute>
+  } 
+/>
+
+<Route 
+  path="/user-dashboard" 
+  element={
+    <PrivateRoute>
+      <UserDashboard />
+    </PrivateRoute>
+  } 
+/>
           <Route
             path="*"
             element={<Navigate to="/login" />}

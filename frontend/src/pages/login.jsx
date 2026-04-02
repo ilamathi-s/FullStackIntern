@@ -21,23 +21,12 @@ const Login = () => {
 
     const user = res.data.user;
 
-    // ❌ ROLE MISMATCH CHECK
-    if (user.role !== role) {
-      alert("You selected wrong role. Please choose correct login.");
-
-      // clear anything just in case
-      localStorage.clear();
-
-      navigate("/select-role?type=login");
-      return;
-    }
-
-    // ✅ correct login
     localStorage.setItem("token", res.data.token);
     localStorage.setItem("user", JSON.stringify(user));
 
     alert("Login Successful");
 
+    // ✅ redirect based on backend role
     if (user.role === "admin") {
       navigate("/admin-dashboard");
     } else {
