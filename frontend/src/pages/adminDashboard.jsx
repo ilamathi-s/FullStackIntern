@@ -4,6 +4,11 @@ import TaskForm from "../components/taskForm";
 import TaskList from "../components/taskList";
 import API from "../services/api";
 
+import {
+  PieChart, Pie, Cell, Tooltip, Legend,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer
+} from "recharts";
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -18,14 +23,11 @@ export default function AdminDashboard() {
   const [userStats, setUserStats] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
-  const triggerRefresh = () => {
-    setRefresh(prev => !prev);
-  };
+  const triggerRefresh = () => setRefresh(prev => !prev);
 
-  // ✅ Fetch user analytics
   const fetchUserStats = async () => {
     try {
-     const res = await API.get("/admin/users-stats");
+      const res = await API.get("/admin/users-stats");
       setUserStats(res.data);
     } catch (err) {
       console.error(err.response?.data || err);
@@ -36,15 +38,12 @@ export default function AdminDashboard() {
     fetchUserStats();
   }, [refresh]);
 
-  // ✅ Auth check
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-
     if (!storedUser || storedUser.role !== "admin") {
       navigate("/login/admin");
       return;
     }
-
     setUser(storedUser);
   }, [navigate]);
 
@@ -56,123 +55,126 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-bg p-6">
 
-  {/* HEADER */}
-  <div className="flex justify-between items-center mb-8">
-    <div>
-      <h1 className="text-3xl font-bold text-primary">
-        Admin Dashboard
-      </h1>
-      <p className="text-muted text-sm mt-1">
-        Manage tasks and monitor users efficiently
-      </p>
-    </div>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-primary">Admin Dashboard</h1>
+          <p className="text-muted text-sm mt-1">
+            Monitor tasks and user performance
+          </p>
+        </div>
 
-    <div className="flex items-center gap-4">
-      {/* User Info */}
-      <div className="bg-card border border-border px-4 py-2 rounded-xl shadow-sm">
-        <p className="text-sm text-muted">Logged in as</p>
-        <p className="font-semibold text-text">{user?.name}</p>
+        <div className="flex items-center gap-4">
+          <div className="bg-card border border-border px-4 py-2 rounded-xl shadow-sm">
+            <p className="text-sm text-muted">Logged in as</p>
+            <p className="font-semibold text-text">{user?.name}</p>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl text-white"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {[
+          { label: "Total Tasks", value: stats.total },
+          { label: "Completed", value: stats.completed, color: "text-green-600" },
+          { label: "Pending", value: stats.pending, color: "text-yellow-600" },
+          { label: "In Progress", value: stats.inProgress, color: "text-blue-600" },
+        ].map((item, i) => (
+          <div key={i} className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+            <p className="text-sm text-muted">{item.label}</p>
+            <h2 className={`text-2xl font-bold ${item.color || "text-text"}`}>
+              {item.value}
+            </h2>
+          </div>
+        ))}
       </div>
 
-      {/* Logout */}
-      <button
-        onClick={handleLogout}
-        className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl text-white transition"
-      >
-        Logout
-      </button>
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+
+        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+          <h2 className="font-semibold mb-4">Task Distribution</h2>
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: "Completed", value: stats.completed },
+                  { name: "Pending", value: stats.pending },
+                  { name: "In Progress", value: stats.inProgress },
+                ]}
+                dataKey="value"
+                outerRadius={80}
+                label
+              >
+                <Cell fill="#22c55e" />
+                <Cell fill="#eab308" />
+                <Cell fill="#3b82f6" />
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+          <h2 className="font-semibold mb-4">User Performance</h2>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={userStats}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="completed" fill="#4f46e5" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="bg-card border border-border rounded-2xl p-6 mb-8 shadow-sm">
+        <h2 className="font-semibold mb-4">User Analytics</h2>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-100 text-muted">
+              <tr>
+                <th className="p-3">Name</th>
+                <th>Email</th>
+                <th>Total</th>
+                <th>Completed</th>
+                <th>Pending</th>
+                <th>In Progress</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {userStats.map((u) => (
+                <tr key={u._id} className="border-t text-center hover:bg-hover">
+                  <td className="p-3 text-left">{u.name}</td>
+                  <td>{u.email}</td>
+                  <td>{u.total}</td>
+                  <td className="text-green-600">{u.completed}</td>
+                  <td className="text-yellow-600">{u.pending}</td>
+                  <td className="text-blue-600">{u.inProgress}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+        <div className="bg-card border border-border p-4 rounded-2xl">
+          <TaskForm refresh={triggerRefresh} />
+        </div>
+
+        <div className="lg:col-span-2 bg-card border border-border p-4 rounded-2xl">
+          <TaskList refresh={refresh} setStats={setStats} />
+        </div>
+      </div>
+
     </div>
-  </div>
-
-  {/* GLOBAL STATS */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-
-    <div className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-      <p className="text-sm text-muted mb-1">Total Tasks</p>
-      <h2 className="text-2xl font-bold text-text">{stats.total}</h2>
-    </div>
-
-    <div className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-      <p className="text-sm text-green-500 mb-1">Completed</p>
-      <h2 className="text-2xl font-bold text-green-600">{stats.completed}</h2>
-    </div>
-
-    <div className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-      <p className="text-sm text-yellow-500 mb-1">Pending</p>
-      <h2 className="text-2xl font-bold text-yellow-600">{stats.pending}</h2>
-    </div>
-
-    <div className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-      <p className="text-sm text-blue-500 mb-1">In Progress</p>
-      <h2 className="text-2xl font-bold text-blue-600">{stats.inProgress}</h2>
-    </div>
-
-  </div>
-
-  {/* USER ANALYTICS */}
-  <div className="bg-card border border-border rounded-2xl shadow-sm p-6 mb-8">
-    <div className="flex justify-between items-center mb-4">
-      <h2 className="text-lg font-semibold text-text">
-        User Analytics
-      </h2>
-      <span className="text-sm text-muted">
-        Total Users: {userStats.length}
-      </span>
-    </div>
-
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm text-left">
-        <thead>
-          <tr className="bg-gray-100 text-muted">
-            <th className="p-3 rounded-l-xl">Name</th>
-            <th className="p-3">Email</th>
-            <th className="p-3 text-center">Total</th>
-            <th className="p-3 text-center">Completed</th>
-            <th className="p-3 text-center">Pending</th>
-            <th className="p-3 text-center rounded-r-xl">In Progress</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {userStats.map((u) => (
-            <tr
-              key={u._id}
-              className="border-t hover:bg-hover transition"
-            >
-              <td className="p-3 font-medium text-text">{u.name}</td>
-              <td className="p-3 text-muted">{u.email}</td>
-              <td className="p-3 text-center">{u.total}</td>
-              <td className="p-3 text-center text-green-600 font-medium">
-                {u.completed}
-              </td>
-              <td className="p-3 text-center text-yellow-600 font-medium">
-                {u.pending}
-              </td>
-              <td className="p-3 text-center text-blue-600 font-medium">
-                {u.inProgress}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  {/* MAIN LAYOUT */}
-  <div className="grid lg:grid-cols-3 gap-6">
-
-    {/* Task Creation */}
-    <div className="bg-card border border-border rounded-2xl p-4 shadow-sm">
-      <TaskForm refresh={triggerRefresh} />
-    </div>
-
-    {/* Task List */}
-    <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-4 shadow-sm">
-      <TaskList refresh={refresh} setStats={setStats} />
-    </div>
-
-  </div>
-
-</div>
   );
 }

@@ -6,21 +6,16 @@ body {
   @apply bg-gray-100;
 }
 :root {
-  /* Primary (very subtle, not loud) */
-  --color-primary: #4f46e5;         /* soft indigo */
+  
+  --color-primary: #4f46e5;        
   --color-primary-hover: #4338ca;
-
-  /* Backgrounds */
-  --color-bg: #f9fafb;              /* very light gray */
+  --color-bg: #f9fafb;              
   --color-card: #ffffff;
 
-  /* Text */
-  --color-text: #111827;            /* near black */
-  --color-muted: #6b7280;           /* gray-500 */
+  --color-text: #111827;           
+  --color-muted: #6b7280;         
 
-  /* Borders */
-  --color-border: #e5e7eb;          /* soft border */
+  --color-border: #e5e7eb;          
 
-  /* Optional UI states */
   --color-hover: #f3f4f6;
 }

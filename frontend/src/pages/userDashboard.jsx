@@ -16,18 +16,14 @@ export default function UserDashboard() {
 
   const [refresh, setRefresh] = useState(false);
 
-  const triggerRefresh = () => {
-    setRefresh(prev => !prev);
-  };
+  const triggerRefresh = () => setRefresh(prev => !prev);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-
     if (!storedUser || storedUser.role !== "user") {
       navigate("/login/user");
       return;
     }
-
     setUser(storedUser);
   }, [navigate]);
 
@@ -39,60 +35,68 @@ export default function UserDashboard() {
   return (
     <div className="min-h-screen bg-bg p-6">
 
-      {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-primary">
-          My Tasks Dashboard
-        </h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 px-4 py-2 rounded text-white"
-        >
-          Logout
-        </button>
+        <h1 className="text-3xl font-bold text-primary">My Tasks</h1>
+
+        <div className="flex items-center gap-4">
+          <span className="text-muted text-sm">Hi, {user?.name}</span>
+
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 px-4 py-2 rounded-xl text-white"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
-      <p className="text-primary">Welcome, {user?.name}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        {[
+          { label: "Total", value: stats.total },
+          { label: "Completed", value: stats.completed, color: "text-green-600" },
+          { label: "Pending", value: stats.pending, color: "text-yellow-600" },
+          { label: "In Progress", value: stats.inProgress, color: "text-blue-600" },
+        ].map((item, i) => (
+          <div key={i} className="bg-card border border-border p-5 rounded-2xl shadow-sm">
+            <p className="text-sm text-muted">{item.label}</p>
+            <h2 className={`text-2xl font-bold ${item.color || "text-text"}`}>
+              {item.value}
+            </h2>
+          </div>
+        ))}
+      </div>
 
-     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-6">
+      <div className="bg-card border border-border p-5 rounded-2xl mb-6 shadow-sm">
+        <h2 className="font-semibold mb-3">Progress</h2>
 
-  {/* Total */}
-  <div className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-    <p className="text-sm text-muted mb-1">Total Tasks</p>
-    <h2 className="text-2xl font-bold text-text">{stats.total}</h2>
-  </div>
+        <div className="w-full bg-gray-200 rounded-full h-3">
+          <div
+            className="bg-green-500 h-3 rounded-full"
+            style={{
+              width:
+                stats.total === 0
+                  ? "0%"
+                  : `${(stats.completed / stats.total) * 100}%`,
+            }}
+          ></div>
+        </div>
 
-  {/* Completed */}
-  <div className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-    <p className="text-sm text-green-500 mb-1">Completed</p>
-    <h2 className="text-2xl font-bold text-green-600">{stats.completed}</h2>
-  </div>
+        <p className="text-sm text-muted mt-2">
+          {stats.total === 0
+            ? "No tasks yet"
+            : `${Math.round((stats.completed / stats.total) * 100)}% completed`}
+        </p>
+      </div>
 
-  {/* Pending */}
-  <div className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-    <p className="text-sm text-yellow-500 mb-1">Pending</p>
-    <h2 className="text-2xl font-bold text-yellow-600">{stats.pending}</h2>
-  </div>
-
-  {/* In Progress */}
-  <div className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition">
-    <p className="text-sm text-blue-500 mb-1">In Progress</p>
-    <h2 className="text-2xl font-bold text-blue-600">{stats.inProgress}</h2>
-  </div>
-
-</div>
-
+     
       <div className="grid lg:grid-cols-3 gap-6">
-
-        {/* Create Task */}
         <TaskForm refresh={triggerRefresh} />
 
-        {/* Task List */}
         <div className="lg:col-span-2">
           <TaskList refresh={refresh} setStats={setStats} />
         </div>
-
       </div>
+
     </div>
   );
 }

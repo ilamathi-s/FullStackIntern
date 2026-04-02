@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { role } = useParams(); // ✅ get role
+  const { role } = useParams(); 
 
   const {
     register,
@@ -17,13 +17,9 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      // ✅ attach role
-      // ✅ NEW
 const res = await registerUser(data);
 
       alert(res.data.message);
-
-      // redirect to login of same role
       navigate(`/login/${role}`);
 
     } catch (err) {

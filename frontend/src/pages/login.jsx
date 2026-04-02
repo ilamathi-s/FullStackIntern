@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { role } = useParams(); // ✅ get role from URL
+  const { role } = useParams(); 
 
   const {
     register,
@@ -25,8 +25,6 @@ const Login = () => {
     localStorage.setItem("user", JSON.stringify(user));
 
     alert("Login Successful");
-
-    // ✅ redirect based on backend role
     if (user.role === "admin") {
       navigate("/admin-dashboard");
     } else {

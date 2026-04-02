@@ -1,5 +1,3 @@
-// controllers/taskController.js
-
 import Task from "../models/Task.js";
 
 export const createTask = async (req, res) => {
@@ -40,12 +38,10 @@ export const getTasks = async (req, res) => {
     let tasks;
 
     if (req.user.role === "admin") {
-      // ✅ Admin → all tasks
       tasks = await Task.find()
         .populate("assignedTo", "name email")
         .sort({ createdAt: -1 });
     } else {
-      // ✅ User → only their tasks
       tasks = await Task.find({ assignedTo: req.user.id })
         .sort({ createdAt: -1 });
     }
@@ -64,7 +60,6 @@ export const updateTask = async (req, res) => {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    // ✅ Only owner OR admin can update
     if (
       req.user.role !== "admin" &&
       task.assignedTo.toString() !== req.user.id
@@ -89,8 +84,6 @@ export const deleteTask = async (req, res) => {
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
-
-    // ✅ Only owner OR admin
     if (
       req.user.role !== "admin" &&
       task.assignedTo.toString() !== req.user.id

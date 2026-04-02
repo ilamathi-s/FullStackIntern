@@ -12,7 +12,6 @@ const authMiddleware = (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ THIS IS THE FIX
     req.user = {
       id: decoded.id,
       role: decoded.role,

@@ -9,8 +9,6 @@ export default function TaskList({ refresh, setStats }) {
     try {
       const res = await getTasks();
       setTasks(res.data);
-
-      // ✅ ROBUST STATS (handles case issues safely)
       const total = res.data.length;
 
       const completed = res.data.filter(

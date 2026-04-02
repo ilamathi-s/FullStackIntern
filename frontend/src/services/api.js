@@ -7,22 +7,25 @@ const API = axios.create({
   },
 });
 
-// ✅ Attach token
-API.interceptors.request.use((req) => {
-  const token = localStorage.getItem("token");
+API.interceptors.request.use(
+  (req) => {
+    const token = localStorage.getItem("token");
 
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
-  }
+    if (token) {
+      req.headers.Authorization = `Bearer ${token}`;
+    }
 
-  return req;
-});
-
-// ✅ Handle auth errors (role-based redirect)
+    return req;
+  },
+  (error) => Promise.reject(error)
+);
 API.interceptors.response.use(
-  (res) => res,
+  (response) => response,
+
   (error) => {
-    if (error.response && error.response.status === 401) {
+    const status = error.response?.status;
+
+    if (status === 401) {
       const user = JSON.parse(localStorage.getItem("user"));
       localStorage.clear();
 
@@ -32,21 +35,34 @@ API.interceptors.response.use(
         window.location.href = "/login/user";
       }
     }
+
+    if (status === 403) {
+      console.warn("Access denied: insufficient permissions");
+
+      alert("You are not authorized to access this resource");
+
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user?.role === "admin") {
+        window.location.href = "/admin";
+      } else {
+        window.location.href = "/user";
+      }
+    }
+
     return Promise.reject(error);
   }
 );
 
-// AUTH
+
 export const loginUser = (data) => API.post("/auth/login", data);
 export const registerUser = (data) => API.post("/auth/register", data);
 
-// TASKS
 export const getTasks = () => API.get("/tasks");
 export const createTask = (data) => API.post("/tasks", data);
 export const updateTask = (id, data) => API.put(`/tasks/${id}`, data);
 export const deleteTask = (id) => API.delete(`/tasks/${id}`);
 
-// ✅ ADMIN
 export const getUserStats = () => API.get("/admin/users-stats");
+
 
 export default API;
