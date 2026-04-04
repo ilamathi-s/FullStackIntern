@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/login";
 import Register from "./pages/register";
-import Dashboard from "./pages/dashboard";
 import Home from "./pages/home";
 import SelectRole from "./pages/roleSelect";
 import AdminDashboard from "./pages/adminDashboard"
 import UserDashboard from "./pages/userDashboard"
+import CreateTaskPage from "./pages/createTaskPage";
 const isAuthenticated = () => {
   return !!localStorage.getItem("token");
 };
@@ -49,14 +49,6 @@ function App() {
               </PublicRoute>
             }
           />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
  <Route 
   path="/admin-dashboard" 
   element={
@@ -79,6 +71,7 @@ function App() {
             element={<Navigate to="/login" />}
           />
   <Route path="/select-role" element={<SelectRole />} />
+  <Route path="/create-task" element={<CreateTaskPage />} />
         </Routes>
       </div>
     </BrowserRouter>

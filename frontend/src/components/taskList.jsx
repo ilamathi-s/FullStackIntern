@@ -9,6 +9,7 @@ export default function TaskList({ refresh, setStats }) {
     try {
       const res = await getTasks();
       setTasks(res.data);
+
       const total = res.data.length;
 
       const completed = res.data.filter(
@@ -37,11 +38,18 @@ export default function TaskList({ refresh, setStats }) {
     }
   }, [refresh]);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {tasks.length > 0 ? (
         tasks.map((task) => (
-          <TaskCard key={task._id} task={task} refresh={fetchTasks} />
+          <TaskCard
+            key={task._id}
+            task={task}
+            refresh={fetchTasks}
+            isAdminDashboard={user?.role === "admin"} 
+          />
         ))
       ) : (
         <p className="text-muted">No tasks found</p>

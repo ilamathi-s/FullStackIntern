@@ -2,13 +2,8 @@ import express from "express";
 import { getUserStats } from "../controllers/statsController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import checkRole from "../middleware/roleMiddleware.js";
+import { getAllUsers } from "../controllers/adminController.js";
 const router = express.Router();
-router.get("/users-stats", authMiddleware, (req, res, next) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ message: "Access denied" });
-  }
-  next();
-}, getUserStats);
 
 router.get(
   "/users-stats",
@@ -16,5 +11,6 @@ router.get(
   checkRole("admin"),
   getUserStats
 );
+router.get("/users", authMiddleware, checkRole("admin"), getAllUsers);
 
 export default router;

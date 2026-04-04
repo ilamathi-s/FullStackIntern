@@ -64,18 +64,27 @@ export default function AdminDashboard() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="bg-card border border-border px-4 py-2 rounded-xl shadow-sm">
-            <p className="text-sm text-muted">Logged in as</p>
-            <p className="font-semibold text-text">{user?.name}</p>
-          </div>
 
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl text-white"
-          >
-            Logout
-          </button>
-        </div>
+  <button
+    onClick={() => navigate("/create-task")}
+    className="bg-primary text-white px-4 py-2 rounded-xl"
+  >
+    + Create Task
+  </button>
+
+  <div className="bg-card border border-border px-4 py-2 rounded-xl shadow-sm">
+    <p className="text-sm text-muted">Logged in as</p>
+    <p className="font-semibold text-text">{user?.name}</p>
+  </div>
+
+  <button
+    onClick={handleLogout}
+    className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl text-white"
+  >
+    Logout
+  </button>
+
+</div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {[
@@ -152,9 +161,9 @@ export default function AdminDashboard() {
             <tbody>
               {userStats.map((u) => (
                 <tr key={u._id} className="border-t text-center hover:bg-hover">
-                  <td className="p-3 text-left">{u.name}</td>
-                  <td>{u.email}</td>
-                  <td>{u.total}</td>
+                  <td className="p-3 text-left text-primary">{u.name}</td>
+                  <td className="text-primary">{u.email}</td>
+                  <td className="text-black">{u.total}</td>
                   <td className="text-green-600">{u.completed}</td>
                   <td className="text-yellow-600">{u.pending}</td>
                   <td className="text-blue-600">{u.inProgress}</td>

@@ -1,3 +1,4 @@
+// services/api.js
 import axios from "axios";
 
 const API = axios.create({
@@ -10,18 +11,16 @@ const API = axios.create({
 API.interceptors.request.use(
   (req) => {
     const token = localStorage.getItem("token");
-
     if (token) {
       req.headers.Authorization = `Bearer ${token}`;
     }
-
     return req;
   },
   (error) => Promise.reject(error)
 );
+
 API.interceptors.response.use(
   (response) => response,
-
   (error) => {
     const status = error.response?.status;
 
@@ -29,40 +28,31 @@ API.interceptors.response.use(
       const user = JSON.parse(localStorage.getItem("user"));
       localStorage.clear();
 
-      if (user?.role === "admin") {
-        window.location.href = "/login/admin";
-      } else {
-        window.location.href = "/login/user";
-      }
+      window.location.href =
+        user?.role === "admin" ? "/login/admin" : "/login/user";
     }
 
     if (status === 403) {
-      console.warn("Access denied: insufficient permissions");
-
-      alert("You are not authorized to access this resource");
-
+      alert("Access denied");
       const user = JSON.parse(localStorage.getItem("user"));
-      if (user?.role === "admin") {
-        window.location.href = "/admin";
-      } else {
-        window.location.href = "/user";
-      }
+
+      window.location.href =
+        user?.role === "admin" ? "/admin" : "/user";
     }
 
     return Promise.reject(error);
   }
 );
 
-
 export const loginUser = (data) => API.post("/auth/login", data);
 export const registerUser = (data) => API.post("/auth/register", data);
 
 export const getTasks = () => API.get("/tasks");
+export const getMyCreatedTasks = () => API.get("/tasks/my-created"); 
 export const createTask = (data) => API.post("/tasks", data);
 export const updateTask = (id, data) => API.put(`/tasks/${id}`, data);
 export const deleteTask = (id) => API.delete(`/tasks/${id}`);
 
 export const getUserStats = () => API.get("/admin/users-stats");
-
 
 export default API;

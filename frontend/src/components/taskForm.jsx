@@ -1,13 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createTask } from "../services/api";
+import API from "../services/api";
 
-export default function TaskForm({ refresh }) {
+export default function TaskForm({ refresh, isPersonal = false }) {
   const [task, setTask] = useState({
     title: "",
     description: "",
     priority: "medium",
-    status: "pending", 
+    status: "pending",
+    assignedTo: "",
   });
+
+  const [users, setUsers] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  useEffect(() => {
+    if (user?.role === "admin" && !isPersonal) {
+      fetchUsers();
+    }
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const res = await API.get("/admin/users");
+      setUsers(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,17 +38,29 @@ export default function TaskForm({ refresh }) {
     }
 
     try {
-      const res = await createTask(task);
-      console.log("Created:", res.data);
+      let payload = {
+        title: task.title,
+        description: task.description,
+        priority: task.priority,
+        status: task.status,
+      };
+
+      if (!isPersonal && user?.role === "admin") {
+        payload.assignedTo = task.assignedTo || null;
+      }
+
+      await createTask(payload);
 
       setTask({
         title: "",
         description: "",
         priority: "medium",
         status: "pending",
+        assignedTo: "",
       });
 
       if (refresh) refresh();
+
     } catch (err) {
       console.error(err.response?.data || err);
       alert("Task creation failed");
@@ -59,6 +91,7 @@ export default function TaskForm({ refresh }) {
             setTask({ ...task, title: e.target.value })
           }
         />
+
         <textarea
           placeholder="Enter task description..."
           className="w-full px-3 py-2 border border-border rounded-lg 
@@ -69,6 +102,7 @@ export default function TaskForm({ refresh }) {
             setTask({ ...task, description: e.target.value })
           }
         />
+
         <select
           className="w-full p-2 border border-border rounded text-text bg-card
           focus:outline-none focus:ring-2 focus:ring-primary"
@@ -81,6 +115,7 @@ export default function TaskForm({ refresh }) {
           <option value="medium">Medium Priority</option>
           <option value="high">High Priority</option>
         </select>
+
         <select
           className="w-full p-2 border border-border rounded text-text bg-card
           focus:outline-none focus:ring-2 focus:ring-primary"
@@ -93,6 +128,25 @@ export default function TaskForm({ refresh }) {
           <option value="in-progress">In Progress</option>
           <option value="completed">Completed</option>
         </select>
+
+        {user?.role === "admin" && !isPersonal && (
+          <select
+            className="w-full p-2 border border-border rounded text-text bg-card
+            focus:outline-none focus:ring-2 focus:ring-primary"
+            value={task.assignedTo}
+            onChange={(e) =>
+              setTask({ ...task, assignedTo: e.target.value })
+            }
+          >
+            <option value="">Assign to user</option>
+            {users.map((u) => (
+              <option key={u._id} value={u._id}>
+                {u.name}
+              </option>
+            ))}
+          </select>
+        )}
+
         <button className="w-full bg-primary text-white py-2.5 rounded-lg hover:bg-primary-hover transition font-medium">
           Add Task
         </button>
