@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { registerUser } from "../services/api";
-import Navbar from "../components/navBar";
+
 import InputField from "../components/inputField";
 import { Link } from "react-router-dom";
 
@@ -33,7 +33,7 @@ const res = await registerUser(data);
 
   return (
     <>
-      <Navbar />
+      
 
       <div className="flex items-center justify-center min-h-screen bg-bg">
 

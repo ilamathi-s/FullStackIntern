@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { loginUser } from "../services/api";
-import Navbar from "../components/navBar";
+
 import InputField from "../components/inputField";
 import { Link } from "react-router-dom";
 
@@ -41,7 +41,7 @@ const Login = () => {
 
   return (
     <>
-      <Navbar />
+    
 
       <div className="min-h-screen flex items-center justify-center bg-bg px-4">
         <div className="bg-card p-8 rounded-2xl shadow-md border border-border w-full max-w-md">

@@ -11,26 +11,25 @@ export const createTask = async (req, res) => {
     let task;
 
     if (req.user.role === "admin") {
-  task = new Task({
-    title,
-    description,
-    priority,
-    createdBy: req.user.id,
-    assignedTo: assignedTo || null,
-  });
-} else {
-  task = new Task({
-    title,
-    description,
-    priority,
-    createdBy: req.user.id,
-    assignedTo: null, 
-  });
-}
+      task = new Task({
+        title,
+        description,
+        priority,
+        createdBy: req.user.id,
+        assignedTo: assignedTo || null,
+      });
+    } else {
+      task = new Task({
+        title,
+        description,
+        priority,
+        createdBy: req.user.id,
+        assignedTo: null,
+      });
+    }
 
     await task.save();
     res.status(201).json(task);
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -40,22 +39,20 @@ export const getTasks = async (req, res) => {
     let tasks;
 
     if (req.user.role === "admin") {
-     
       tasks = await Task.find({ assignedTo: { $ne: null } })
         .populate("assignedTo", "name email")
         .sort({ createdAt: -1 });
-
     } else {
       tasks = await Task.find({ assignedTo: req.user.id })
         .sort({ createdAt: -1 });
     }
 
     res.json(tasks);
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 export const updateTask = async (req, res) => {
   try {
     let task = await Task.findById(req.params.id);
@@ -64,20 +61,32 @@ export const updateTask = async (req, res) => {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    if (
-      req.user.role !== "admin" &&
-      (!task.assignedTo || task.assignedTo.toString() !== req.user.id)
-    ) {
-      return res.status(403).json({ message: "Not authorized" });
+    if (req.user.role !== "admin") {
+      const isAssigned =
+        task.assignedTo && task.assignedTo.toString() === req.user.id;
+
+      const isOwner = task.createdBy.toString() === req.user.id;
+
+      if (!isAssigned && !isOwner) {
+        return res.status(403).json({ message: "Not authorized" });
+      }
     }
 
-    task = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const updatedData = { ...req.body };
 
-    res.json(task);
+    if (updatedData.assignedTo === "") {
+      updatedData.assignedTo = null;
+    }
 
+    const updatedTask = await Task.findByIdAndUpdate(
+      req.params.id,
+      updatedData,
+      { new: true }
+    );
+
+    res.json(updatedTask);
   } catch (err) {
+    console.error("UPDATE ERROR:", err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -89,7 +98,6 @@ export const deleteTask = async (req, res) => {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    
     if (req.user.role === "admin") {
       await task.deleteOne();
       return res.json({ message: "Task deleted" });
@@ -104,16 +112,14 @@ export const deleteTask = async (req, res) => {
     }
 
     await task.deleteOne();
-
     res.json({ message: "Task deleted" });
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 export const getMyCreatedTasks = async (req, res) => {
   try {
-
     const tasks = await Task.find({
       createdBy: req.user.id,
       assignedTo: null,

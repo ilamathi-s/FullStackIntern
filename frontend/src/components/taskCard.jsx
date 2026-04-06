@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { updateTask, deleteTask } from "../services/api";
 import API from "../services/api";
 import { FaCheckCircle } from "react-icons/fa";
+
 export default function TaskCard({ task, refresh, isPersonal = false, isAdminDashboard = false }) {
   const [isEditing, setIsEditing] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
@@ -32,24 +33,64 @@ export default function TaskCard({ task, refresh, isPersonal = false, isAdminDas
   };
 
   const handleUpdate = async () => {
-    await updateTask(task._id, updatedTask);
-    setIsEditing(false);
-    refresh();
+    try {
+      const payload = { ...updatedTask };
+
+      if (payload.assignedTo === "") {
+        delete payload.assignedTo;
+      }
+
+      await updateTask(task._id, payload);
+
+      setIsEditing(false);
+      if (refresh) refresh();
+    } catch (err) {
+      console.error(err.response?.data || err);
+      alert("Update failed");
+    }
   };
 
   const handleComplete = async () => {
-    await updateTask(task._id, { status: "completed" });
-    refresh();
+    try {
+      await updateTask(task._id, { status: "completed" });
+      if (refresh) refresh();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const isOwner = task.createdBy === user?.id;
-  const isAssignedTask = task.assignedTo !== null;
+  const isOwner =
+    task.createdBy === user?.id ||
+    task.createdBy?._id === user?.id;
+
+  const isAssignedTask = !!task.assignedTo;
 
   return (
     <div className="bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md transition duration-300">
 
       {isEditing ? (
         <div className="space-y-3">
+
+          <input
+            type="text"
+            value={updatedTask.title}
+            onChange={(e) =>
+              setUpdatedTask({ ...updatedTask, title: e.target.value })
+            }
+            className="w-full px-3 py-2 border border-border rounded-lg 
+            text-text bg-card
+            focus:ring-2 focus:ring-primary outline-none"
+          />
+
+          <textarea
+            value={updatedTask.description}
+            onChange={(e) =>
+              setUpdatedTask({ ...updatedTask, description: e.target.value })
+            }
+            className="w-full px-3 py-2 border border-border rounded-lg 
+            text-text bg-card
+            focus:ring-2 focus:ring-primary outline-none"
+          />
 
           {user?.role === "admin" && !isPersonal && (
             <select
@@ -138,13 +179,29 @@ export default function TaskCard({ task, refresh, isPersonal = false, isAdminDas
             </h3>
 
             <div className="flex gap-2">
-              <span className="text-xs px-2 py-1 rounded-full font-medium">
-                {task.priority}
-              </span>
+              <span className={`text-xs px-2 py-1 rounded-full font-medium
+  ${
+    task.priority === "high"
+      ? "bg-red-100 text-red-600"
+      : task.priority === "medium"
+      ? "bg-yellow-100 text-yellow-600"
+      : "bg-green-100 text-green-600"
+  }
+`}>
+  {task.priority}
+</span>
 
-              <span className="text-xs px-2 py-1 rounded-full font-medium">
-                {task.status}
-              </span>
+              <span className={`text-xs px-2 py-1 rounded-full font-medium
+  ${
+    task.status === "completed"
+      ? "bg-green-100 text-green-600"
+      : task.status === "in-progress"
+      ? "bg-blue-100 text-blue-600"
+      : "bg-gray-200 text-gray-600"
+  }
+`}>
+  {task.status}
+</span>
             </div>
           </div>
 
@@ -155,20 +212,20 @@ export default function TaskCard({ task, refresh, isPersonal = false, isAdminDas
           <div className="flex gap-2 mt-4">
 
           {!isAdminDashboard && (
-  <button
-    onClick={handleComplete}
-    disabled={task.status === "completed"}
-    className={`flex-1 py-2 text-white rounded-lg flex items-center justify-center gap-2 transition
-    ${
-      task.status === "completed"
-        ? "bg-green-300 cursor-not-allowed"
-        : "bg-green-500 hover:bg-green-600"
-    }`}
-  >
-    <FaCheckCircle />
-    Done
-  </button>
-)}
+            <button
+              onClick={handleComplete}
+              disabled={task.status === "completed"}
+              className={`flex-1 py-2 text-white rounded-lg flex items-center justify-center gap-2 transition
+              ${
+                task.status === "completed"
+                  ? "bg-green-300 cursor-not-allowed"
+                  : "bg-green-500 hover:bg-green-600"
+              }`}
+            >
+              <FaCheckCircle />
+              Done
+            </button>
+          )}
 
             <button
               onClick={() => setIsEditing(true)}
@@ -181,7 +238,7 @@ export default function TaskCard({ task, refresh, isPersonal = false, isAdminDas
               <button
                 onClick={async () => {
                   await deleteTask(task._id);
-                  refresh();
+                  if (refresh) refresh();
                 }}
                 className="flex-1 py-2 bg-red-500 text-white rounded-lg"
               >

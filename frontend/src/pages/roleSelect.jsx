@@ -1,14 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import Navbar from "../components/navBar";
+
 
 export default function SelectRole() {
   const location = useLocation();
   const navigate = useNavigate();
 
   const query = new URLSearchParams(location.search);
-  const type = query.get("type"); // login or register
+  const type = query.get("type");
 
-  // ✅ fallback if type is missing
   const authType = type === "register" ? "register" : "login";
 
   const handleSelect = (role) => {
@@ -17,37 +16,59 @@ export default function SelectRole() {
 
   return (
     <>
-    <Navbar/>
-    <div className="min-h-screen flex items-center justify-center bg-bg">
-        
-      <div className="bg-white p-8 rounded-xl shadow-md text-center w-80">
+   
 
-        <h2 className="text-2xl font-bold mb-2">
-          Select Role
-        </h2>
+      <div className="min-h-screen bg-bg flex items-center justify-center px-4">
 
-        <p className="text-sm text-gray-500 mb-6">
-          Continue as {authType === "login" ? "Login" : "Register"}
-        </p>
+        <div className="w-full max-w-md text-center">
 
-        <div className="flex gap-4 justify-center">
-          <button
-            onClick={() => handleSelect("user")}
-            className="px-6 py-2 rounded-lg border border-primary text-primary bg-transparent hover:bg-primary hover:text-white transition"
-          >
-            User
-          </button>
+          <h1 className="text-3xl font-bold text-text mb-2">
+            Choose Your Role
+          </h1>
 
-          <button
-            onClick={() => handleSelect("admin")}
-            className="px-6 py-2 rounded-lg border border-primary text-primary bg-transparent hover:bg-primary hover:text-white transition"
-          >
-            Admin
-          </button>
+          <p className="text-sm text-muted mb-10">
+            Continue as {authType === "login" ? "Login" : "Register"}
+          </p>
+
+          <div className="bg-card border border-border rounded-2xl p-6 shadow-lg space-y-4">
+
+            <div
+              onClick={() => handleSelect("user")}
+              className="w-full cursor-pointer border border-border rounded-xl px-5 py-4 
+              flex items-center justify-between
+              hover:border-primary hover:shadow-md hover:-translate-y-0.5
+              transition-all duration-200"
+            >
+              <div className="flex items-center gap-3 text-left">
+                <div>
+                  <h3 className="font-semibold text-text">User</h3>
+                </div>
+              </div>
+
+              <span className="text-muted text-sm">→</span>
+            </div>
+
+            <div
+              onClick={() => handleSelect("admin")}
+              className="w-full cursor-pointer border border-border rounded-xl px-5 py-4 
+              flex items-center justify-between
+              hover:border-primary hover:shadow-md hover:-translate-y-0.5
+              transition-all duration-200"
+            >
+              <div className="flex items-center gap-3 text-left">
+                <div>
+                  <h3 className="font-semibold text-text">Admin</h3>
+                  
+                </div>
+              </div>
+
+              <span className="text-muted text-sm">→</span>
+            </div>
+
+          </div>
+
         </div>
-
       </div>
-    </div>
     </>
   );
 }
